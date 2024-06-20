@@ -1,8 +1,11 @@
 # Mhagnet App
 
-The Mhagnet app is crafted for personal use and to elevate my skills to new heights. It is comprising three main components:
+The Mhagnet app is crafted for personal use and to elevate my skills to new heights. It is comprising three main sections:
+The source code provided here are sample codes sourced from http://www.mhagnet.com/admin/products, intended solely for demonstration purposes.
+The app is still a work in progress and may encounter some issues.
 
-## Components
+
+## Sections
 
 1. **Admin Interface**
     - Built with the latest version of Angular, offering a sleek and modern user experience.
