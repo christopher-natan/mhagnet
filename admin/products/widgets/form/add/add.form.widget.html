@@ -1,0 +1,59 @@
+<p-dialog [(visible)]="isShow" [modal]="true" showEffect="fade" [style]="{width: '30vw', height: '70%', overflow:'hidden'}" [breakpoints]="{'960px': '75vw'}">
+    <p-tabView [(activeIndex)]="activeIndex">
+        <p-tabPanel header="Step One">
+            <div class=" p-fluid">
+                <div class="field">
+                    <label for="name"><strong>Name</strong></label>
+                    <input type="text" pInputText id="name" [(ngModel)]="product.name"
+                           required autofocus
+                           placeholder="Enter a product name"
+                           [ngClass]="{'ng-dirty ng-invalid' : isSubmitted && !product.name}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="isSubmitted && !product.name">Name is required.</small>
+                </div>
+                <div class="field">
+                    <label for="description"><strong>Description</strong></label>
+                    <textarea id="description" pInputTextarea [(ngModel)]="product.description" rows="8"
+                              spellcheck="false"
+                              required
+                              placeholder="Enter product description"
+                              [ngClass]="{'ng-invalid ng-dirty' : isSubmitted && !product.description}"
+                              cols="20"></textarea>
+                    <small class="ng-dirty ng-invalid" *ngIf="isSubmitted && !product.description">Description is
+                        required.</small>
+                </div>
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <label for="price"><strong>Price</strong></label>
+                        <p-inputNumber id="price" [(ngModel)]="product.price" mode="currency" currency="USD"
+                                       required
+                                       [ngClass]="{'ng-invalid ng-dirty' : isSubmitted && !product.price}"
+                                       locale="en-US"></p-inputNumber>
+                        <small class="ng-dirty ng-invalid" *ngIf="isSubmitted && !product.price">Price is required.</small>
+                    </div>
+                    <div class="field col">
+                        <label for="quantity"><strong>Quantity</strong></label>
+                        <p-inputNumber id="quantity" [(ngModel)]="product.quantity"
+                                       required
+                                       [ngClass]="{'ng-invalid ng-dirty' : isSubmitted && !product.quantity}"></p-inputNumber>
+                        <small class="ng-dirty ng-invalid" *ngIf="isSubmitted && !product.quantity">Quantity is
+                            required.</small>
+                    </div>
+                </div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel header="Step Two">
+            <div class="field"  [ngClass]="{'p-inputtext ng-invalid ng-dirty' : isSubmitted && !product.categories}">
+                <small class="ng-dirty ng-invalid" *ngIf="isSubmitted && !product.categories">Category is required.</small>
+            </div>
+            <products-categories-widget [standalone]="true"/>
+        </p-tabPanel>
+    </p-tabView>
+
+    <ng-template pTemplate="footer">
+        <hr />
+        <div class="grid">
+            <div class="col flex  align-items-center w-1"><span class="mr-2">Auto Close</span> <p-inputSwitch [(ngModel)]="isAutoClose" /></div>
+            <div class="col"><button pButton  pRipple label="Save" icon="pi pi-save" class="p-button-success mr-2"  (click)="ProductsAddForm.Submit.onClick()"></button></div>
+        </div>
+    </ng-template>
+</p-dialog>

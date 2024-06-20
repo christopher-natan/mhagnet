@@ -1,0 +1,29 @@
+<p-splitter [panelSizes]="[60,40]" [minSizes]="[50,30]">
+    <ng-template pTemplate>
+        <div class="col mr-3"><products-table-widget></products-table-widget></div>
+    </ng-template>
+    <ng-template pTemplate>
+        <div class="col ml-3">
+            <p-tabView [(activeIndex)]="activeIndex">
+                <p-tabPanel header="Details">
+                    <products-details-widget/>
+                </p-tabPanel>
+                <p-tabPanel header="Update">
+                    <products-edit-form-widget/>
+                </p-tabPanel>
+                <p-tabPanel header="Categories">
+                    <products-categories-widget />
+                </p-tabPanel>
+                <p-tabPanel header="Add Photos">
+                    <upload-image-widget/>
+                    <list-image-widget/>
+                </p-tabPanel>
+            </p-tabView>
+        </div>
+    </ng-template>
+</p-splitter>
+<spinner-widget />
+<products-add-form-widget />
+<p-toast />
+
+

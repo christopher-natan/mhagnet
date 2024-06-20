@@ -1,0 +1,16 @@
+<p-fileUpload name="files" [url]="Configs.apiUploadImage"
+              [chooseLabel]="'Choose'"
+              [cancelStyleClass]="'align-items-end'"
+              [uploadStyleClass]="'justify-content-end'"
+              (onUpload)="UploadImage.onUpload($event)"
+              (onBeforeUpload)="UploadImage.onBeforeUpload()"
+              [multiple]="true" accept="image/*"
+              [headers]="this.headers"
+              [maxFileSize]="1000000"
+              (onError)="UploadImage.onError($event, uploadedImages)">
+    <ng-template pTemplate="content" class="p-0">
+        <ul *ngIf="uploadedImages.length">
+            <li *ngFor="let file of uploadedImages">{{ file.name }} - {{ file.size }} bytes</li>
+        </ul>
+    </ng-template>
+</p-fileUpload>

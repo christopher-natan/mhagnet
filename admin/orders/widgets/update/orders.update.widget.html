@@ -1,0 +1,32 @@
+<p>You can update the order while it is still pending</p>
+<div class="field grid mt-5">
+    <label class="col-12 mb-2 md:col-4 md:mb-0">Order Status</label>
+    <div class="col-12 md:col-6">
+        <p-dropdown [options]="orderStatus"  [(ngModel)]="invoice.orderStatus"></p-dropdown>
+    </div>
+</div>
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0">Payment Status</label>
+    <div class="col-12 md:col-6">
+        <p-dropdown [options]="paymentStatus"  [(ngModel)]="invoice.paymentStatus"></p-dropdown>
+    </div>
+</div>
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0">Payment Method</label>
+    <div class="col-12 md:col-6">
+        <p-dropdown [options]="paymentMethod"  [(ngModel)]="invoice.paymentMethod"></p-dropdown>
+    </div>
+</div>
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0">Delivery Date</label>
+    <div class="col-12 md:col-6">
+        <p-calendar [showIcon]="true" inputId="icon" [(ngModel)]="delivery.deliveryDate"></p-calendar>
+    </div>
+</div>
+<p-toolbar styleClass="mb-4">
+    <ng-template pTemplate="right">
+        <div>
+            <button pButton pRipple label="Save" icon="pi pi-save" class="p-button-success mr-2" (click)="OrdersUpdate.Submit.onClick()"></button>
+        </div>
+    </ng-template>
+</p-toolbar>

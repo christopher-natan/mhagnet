@@ -1,0 +1,5 @@
+{
+  "prompt": "Get the information like '{INFORMATION}' from the following content, format the response as JSON format",
+  "information": "",
+  "model": "Information"
+}

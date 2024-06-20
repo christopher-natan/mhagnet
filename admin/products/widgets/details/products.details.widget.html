@@ -1,0 +1,18 @@
+<div class="grid mt-3" *ngIf="product">
+    <div class="col-6">
+        <div class="border-round" style="border: 1px solid var(--surface-d)">
+            <p-image [src]="product.images | productImage" [alt]="product.images" width="100%" [preview]="true"/>
+        </div>
+    </div>
+    <div class="col-6">
+        <h5 class="mb-1">{{ product.name }}</h5>
+        <small>Code: {{ product.code }}</small>
+        <div class="my-5 mt-5">
+            <h4 class="mb-1 mb-1">{{ product.price | currency: 'PHP' }}</h4>
+            <span class="{{'product-badge status-' +  Number(product.isAvailable) }}">{{ Number(product.isAvailable) | elements: 'productStatus' }}</span>
+        </div>
+    </div>
+    <div class="p-3">
+        <p>{{ product.description }}</p>
+    </div>
+</div>

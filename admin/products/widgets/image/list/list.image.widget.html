@@ -1,0 +1,14 @@
+<p-messages
+    [(value)]="messages"
+    [enableService]="false"
+    [closable]="false" />
+<div class="grid pt-1 pl-3 pr-3" *ngFor="let image of images">
+    <div class="col-4">
+        <p-image [src]="image | productImage" [alt]="" class="shadow-1" width="80" [preview]="true"/>
+    </div>
+    <div class="col-6 pl-2 flex align-items-center justify-content">{{image.size | bytesConvert}}</div>
+    <div class="col-2 flex align-items-center justify-content-center">
+        <p-confirmPopup key="{{image.name}}" />
+        <button (click)="ProductsListImage.onClick($event, image.name)" type="button" pRipple icon="pi pi-times" pButton class="p-element p-button-icon-only p-button"></button>
+    </div>
+</div>

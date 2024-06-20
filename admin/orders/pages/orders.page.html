@@ -1,0 +1,27 @@
+<p-splitter [panelSizes]="[60,40]" [minSizes]="[40,40]">
+    <ng-template pTemplate>
+        <div class="col">
+            <transactions-table-widget></transactions-table-widget>
+        </div>
+    </ng-template>
+    <ng-template pTemplate>
+        <div class="col">
+            <p-tabView>
+                <p-tabPanel header="Items">
+                    <items-table-widget></items-table-widget>
+                </p-tabPanel>
+                <p-tabPanel header="Invoice">
+                    <order-invoice-widget></order-invoice-widget>
+                </p-tabPanel>
+                <p-tabPanel header="Customer">
+                    <orders-customer-widget></orders-customer-widget>
+                </p-tabPanel>
+                <p-tabPanel header="Update Order" class="p-fluid">
+                    <orders-update-widget></orders-update-widget>
+                </p-tabPanel>
+            </p-tabView>
+        </div>
+    </ng-template>
+</p-splitter>
+<spinner-widget />
+<p-toast />

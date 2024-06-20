@@ -1,0 +1,33 @@
+<p-overlayPanel #overlayPanel [showCloseIcon]="false" [style]="{width: '400px'}">
+    <ng-template pTemplate>
+        <div class="p-fluid">
+            <h5>Add New Category</h5>
+            <div class="field grid mt-5">
+                <label htmlFor="parent" class="col-12 mb-2 md:col-2 md:mb-0">Parent</label>
+                <div class="col-12 md:col-10">
+                    <p-dropdown
+                        [options]="parents"
+                        [(ngModel)]="category.parentId"
+                        optionLabel="name"
+                        id="parent"
+                        placeholder="Select a parent"/>
+                </div>
+            </div>
+            <div class="field grid">
+                <label htmlFor="child" class="col-12 mb-2 md:col-2 md:mb-0">Name</label>
+                <div class="col-12 md:col-10">
+                    <input type="text" pInputText id="child" [(ngModel)]="category.label"
+                           required autofocus
+                           [ngClass]="{'ng-invalid ng-dirty' : isSubmitted && !category.label}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="isSubmitted && !category.label">Category is
+                        required.</small>
+                </div>
+            </div>
+            <div class="mb-5"></div>
+            <div class="flex justify-content-end gap-2 mt-8">
+                <p-button label="Cancel" severity="secondary" (click)="overlayPanel.toggle($event)"/>
+                <p-button label="Save" (click)="CategoriesForm.Submit.onClick()"/>
+            </div>
+        </div>
+    </ng-template>
+</p-overlayPanel>

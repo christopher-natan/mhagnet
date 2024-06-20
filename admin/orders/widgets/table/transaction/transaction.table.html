@@ -1,0 +1,42 @@
+<p-table #dt1
+         (onRowSelect)="TransactionTable.setOnRowSelected($event)"
+         [(selection)]="selected" [selectionMode]="'single'"
+         [value]="orders" [paginator]="true" [rows]="8" responsiveLayout="scroll" [rowHover]="true">
+    <ng-template pTemplate="caption">
+        <h5 class="m-0">Manage Orders</h5>
+        <div class="flex justify-content-between flex-column sm:flex-row">
+
+        </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="name">OR Number
+                <p-columnFilter type="text" field="name" display="menu" placeholder="Search by name"></p-columnFilter>
+            </th>
+            <th pSortableColumn="price">Date
+                <p-sortIcon field="data"></p-sortIcon>
+            </th>
+            <th pSortableColumn="price">Total
+                <p-sortIcon field="price"></p-sortIcon>
+            </th>
+            <th pSortableColumn="status">Status
+
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-order>
+        <tr [pSelectableRow]="order">
+            <td style="width: 25%; min-width: 7rem;">
+                {{ order.orNumber }}
+            </td>
+            <td style="width: 25%; min-width: 7rem;">
+                {{ order.dateOrdered | readableDate }}
+            </td>
+            <td style="width: 15%; min-width: 8rem;">{{ order.invoice.totalAmount | currency:'PHP' }}</td>
+            <td style="width: 15%; min-width: 8rem;">
+                <span class="{{'order-badge status-' + order.invoice.orderStatus}}">{{ order.invoice.orderStatus | elements: 'orderStatus' }}</span>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
