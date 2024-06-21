@@ -21,5 +21,5 @@ The app is still a work in progress and may encounter some issues.
 The Mhagnet app utilizes MySQL, elegantly structured through an ORM (Object-Relational Mapping) for seamless database interactions.
 
 
-### Link
-http://www.mhagnet.com/admin/products
+
+

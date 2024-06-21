@@ -3,5 +3,6 @@ Document extraction of report with AI that automatically locate and retrieve spe
 from various types of documents. 
 
 ### Link
-http://www.mhagnet.com/admin/reporter
+This is the backend app of the AI reporter at http://www.mhagnet.com/admin/reporter
+I program it to use AI by analyzing content of the uploaded document.
 
