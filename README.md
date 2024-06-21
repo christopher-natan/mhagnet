@@ -7,14 +7,17 @@ The app is still a work in progress and may encounter some issues.
 
 ## Sections
 
-1. **Admin Interface**
+1. **Admin (Frontend)**
     - Built with the latest version of Angular, offering a sleek and modern user experience.
+    - https://github.com/christopher-natan/mhagnet/tree/dev/admin
 
-2. **API/Backend**
+2. **API (Backend Service)**
     - Developed using NodeJS with NestJS, ensuring a robust and scalable backend infrastructure.
+    - https://github.com/christopher-natan/mhagnet/tree/dev/api
 
-3. **AI Document Reporter**
+3. **AI Reporter (AI Service)**
     - This feature allows you to upload PDF documents and extract desired information or answer questions contained within the PDFs, implemented using NodeJS with Express.
+    - https://github.com/christopher-natan/mhagnet/tree/dev/ai-reporter
 
 ## Database
 
