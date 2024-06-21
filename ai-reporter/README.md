@@ -1,4 +1,4 @@
-# Mhagnet AI Reporter
+# Mhagnet AI Reporter (AI Service)
 Document extraction of report with AI that automatically locate and retrieve specific information 
 from various types of documents. 
 
