@@ -8,20 +8,24 @@ The app is still a work in progress and may encounter some issues and this is qu
 ## Sections
 
 1. **Admin (Frontend)**
-    - Built with the latest version of Angular, offering a sleek and modern user experience.
+    - I built it with the latest version of Angular, offering a sleek and modern user experience.
     - https://github.com/christopher-natan/mhagnet/tree/dev/admin
+    - I highly implemented here the Event-driven programming
 
 2. **API (Backend Service)**
-    - Developed using NodeJS with NestJS, ensuring a robust and scalable backend infrastructure.
+    - I developed the backend using NodeJS with NestJS framework, ensuring a robust and scalable backend infrastructure.
     - https://github.com/christopher-natan/mhagnet/tree/dev/api
 
 3. **AI Reporter (AI Service)**
-    - This feature allows you to upload PDF documents and extract desired information or answer questions contained within the PDFs, implemented using NodeJS with Express.
+    - This feature allows you to upload PDF documents and extract desired information or answer questions contained within the PDFs, I wrote it using NodeJS with Express.
     - https://github.com/christopher-natan/mhagnet/tree/dev/ai-reporter
+    - Using observables and  event-based
+   
 3. **Driver App (Mobile Service)**
    - For Driver App I am using Dart-Flutter with GetX state management. I've developed Kitakits app and I will use it as the basis for the Mhagnet driver app,
      with just a few tweaks to make it compatible. Check it on Playstore https://play.google.com/store/apps/details?id=com.cmnworks.kitakits
    - https://github.com/christopher-natan/mhagnet/tree/dev/drivers
+   - Strictly Event-driven programming approach
 
 ## Database
 
