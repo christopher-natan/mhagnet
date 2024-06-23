@@ -1,0 +1,59 @@
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0">
+        <p-avatar image="assets/images/profile.jpg" styleClass="mr-2" size="xlarge" shape="circle"/>
+    </label>
+    <div class="col-12 md:col-7">
+        <p-autoComplete
+            id="name"
+            [(ngModel)]="customInfoHolder"
+            required autofocus
+            placeholder="Enter customer name"
+            [suggestions]="suggestions"
+            [optionLabel]="'name'"
+            (blur)="PosCustomer.onBlur()"
+            (onSelect)="PosCustomer.onSelect()"
+            [ngClass]="{'ng-invalid ng-dirty' : isSubmitted && !customer.name}"
+            (completeMethod)="PosCustomer.onSearch($event)"/>
+        <small class="ng-dirty ng-invalid" *ngIf="isSubmitted && !customer.name">Name is
+            required.</small>
+
+    </div>
+</div>
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0">Delivery Address:</label>
+    <div class="col-12 md:col-7">
+        <textarea pInputTextarea rows="3" [(ngModel)]="customer.address.delivery"
+                  required autofocus
+                  placeholder="Customer delivery address"
+                  (blur)="PosCustomer.onBlur()"
+                  [ngClass]="{'ng-invalid ng-dirty' : isSubmitted && !customer.address.delivery}"
+                  cols="20" id="deliveryAddress"></textarea>
+        <small class="ng-dirty ng-invalid" *ngIf="isSubmitted && !customer.address.delivery">Delivery address is
+            required.</small>
+    </div>
+</div>
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0">Email:</label>
+    <div class="col-12 md:col-7">
+        <input
+            pInputText
+            type="text"
+            required
+            placeholder="Customer email"
+            (blur)="PosCustomer.onBlur()"
+            [ngClass]="{'ng-invalid ng-dirty' : isSubmitted && !customer.contacts.email}"
+            [(ngModel)]="customer.contacts.email" id="email"/>
+        <small class="ng-dirty ng-invalid" *ngIf="isSubmitted && !customer.contacts.email">Email is
+            required.</small>
+    </div>
+</div>
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0">Phone Number:</label>
+    <div class="col-12 md:col-7">
+        <input
+            pInputText
+            placeholder="Customer phone number"
+            (blur)="PosCustomer.onBlur()"
+            [(ngModel)]="customer.contacts.phone" id="phone"/>
+    </div>
+</div>

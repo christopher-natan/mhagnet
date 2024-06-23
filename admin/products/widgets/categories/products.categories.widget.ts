@@ -14,16 +14,14 @@ import {DialogModule} from "primeng/dialog";
 import {OverlayPanelModule} from "primeng/overlaypanel";
 import {TableModule} from "primeng/table";
 import {RippleModule} from "primeng/ripple";
-import {SpinnerService} from "../../../services/spinner.service";
-import {NotifierService} from "../../../services/notifier.service";
 import {CategoriesFormActions, CategoriesFormWidget} from "./form/categories.form.widget";
 import {ScrollPanelModule} from "primeng/scrollpanel";
 import {ToolbarModule} from "primeng/toolbar";
 
 export enum ProductsCategoriesActions {
-    onSaved = "onSavedCategory",
-    onNewCategory = "onNewCategory",
-    onSetSelected = "onSetSelectedCategory"
+    onSaved = "onSaved[ProductsCategories]",
+    onNewCategory = "onNewCategory[ProductsCategories]",
+    onSetSelected = "onSetSelected[ProductsCategories]"
 }
 
 @Component({
@@ -45,23 +43,21 @@ export enum ProductsCategoriesActions {
         ScrollPanelModule,
         ToolbarModule
     ],
-    providers: [NotifierService],
+    providers: [],
     templateUrl: './products.categories.widget.html',
 })
 export class ProductsCategoriesWidget implements OnInit {
-    @Input() standalone: boolean = false;
+    @Input() isStandalone: boolean = false;
     categories: TreeNode[] = [];
     product: Products = {};
     checked: TreeNode[] = [];
     selected: any;
     parents: any[] = [];
-    input: string;
+    selectedNodes: string;
     isSubmitted: boolean;
 
     constructor(
         protected _events: Events,
-        protected _spinnerService: SpinnerService,
-        protected _notifierService: NotifierService,
         protected _categoriesModel: CategoriesModel,
         protected _productsModel: ProductsModel) {
     }
@@ -72,6 +68,53 @@ export class ProductsCategoriesWidget implements OnInit {
         await this.CategoriesForm.setReady();
     }
 
+    ProductsCategories = {
+        setReady: async () => {
+            const parent = this.ProductsCategories;
+            if (!this.isStandalone) await parent.setCategories();
+        },
+        checkNodes: (parent: TreeNode, nodes: TreeNode[], selected: Array<any>) => {
+            if (!nodes) return;
+            for (let node of nodes) {
+                const key: string = node.key;
+                if (selected.indexOf(key) >= 0) {
+                    !this.isStandalone ? this.checked.push(node) : {};
+                    parent !== undefined ? parent.expanded = true : {}
+                }
+                parent === undefined ? this.parents.push(node) : {}
+                node.children ? this.ProductsCategories.checkNodes(node, node.children, selected) : {}
+            }
+        },
+        onNodeSelect: async ($event?: TreeNodeSelectEvent) => {
+            this.selected = this.checked.map((item: any) => item.key);
+            this.selectedNodes = this.selected.join(',');
+            await this._events.set(ProductsCategoriesActions.onSetSelected, {selected: this.selectedNodes, isStandalone: this.isStandalone});
+        },
+        onClickNewCategory: async ($event: MouseEvent) => {
+            const parents = this.parents.map((item: { label: any; code: any; }) => {
+                return {name: item.label, code: item.code};
+            });
+            await this._events.set(ProductsCategoriesActions.onNewCategory, {selected: this.product, parents: parents, event: $event});
+        },
+        setCategories: async () => {
+            const onSuccess = (results: any) => {
+                this.categories = this._categoriesModel.format(results.data) as TreeNode[];
+                this._productsModel.parentCategories = this.categories;
+            }
+            this._categoriesModel.findAll(onSuccess).then((_: any) => {
+            });
+        },
+        onSubmit: async () => {
+            this.isSubmitted = true;
+            const onSuccess = async (_: any) => {
+                this.isSubmitted = false;
+                await this._events.set(ProductsCategoriesActions.onSaved, {categories: this.selected});
+            }
+            await this._productsModel.saveCategories({categories: this.selected}, this.product.id, onSuccess).then(async (_: any) => {
+            })
+        },
+    }
+
     ProductsTable = {
         setReady: async () => {
             const parent = this.ProductsTable;
@@ -79,19 +122,19 @@ export class ProductsCategoriesWidget implements OnInit {
             await parent._onClickedAddNew();
         },
         _onRowSelected: async () => {
-            if(this.standalone) return;
+            if (this.isStandalone) return;
             this._events.on(ProductsTableActions.onRowSelected, (results: any) => {
                 this.product = results.selected;
                 let categories = this.product.categories;
                 categories = categories.map((item: { id: any; }) => item.id);
                 this.checked = [];
                 this.ProductsCategories.checkNodes(undefined, this.categories, categories);
-                this.ProductsCategories.setSelected();
+                this.ProductsCategories.onNodeSelect();
             })
         },
         _onClickedAddNew: async () => {
             this._events.on(ProductsTableActions.onClickedAddNew, (_: any) => {
-               this.categories = this._productsModel.parentCategories;
+                this.categories = this._productsModel.parentCategories;
             })
         }
     }
@@ -105,65 +148,6 @@ export class ProductsCategoriesWidget implements OnInit {
             this._events.on(CategoriesFormActions.onSaved, async (_: any) => {
                 await this.ProductsCategories.setCategories();
             })
-        }
-    }
-
-    ProductsCategories = {
-        setReady: async () => {
-            const parent = this.ProductsCategories;
-            if(!this.standalone) await parent.setCategories();
-        },
-        checkNodes: (parent: TreeNode, nodes: TreeNode[], selected: Array<any>) => {
-            if (!nodes) return;
-            for (let node of nodes) {
-                const key: string = node.key;
-                if (selected.indexOf(key) >= 0) {
-                    !this.standalone ? this.checked.push(node) : {};
-                    parent !== undefined ? parent.expanded = true : {}
-                }
-                parent === undefined ? this.parents.push(node) : {}
-                node.children ? this.ProductsCategories.checkNodes(node, node.children, selected) : {}
-            }
-        },
-        setSelected: async ($event?: TreeNodeSelectEvent) => {
-            this.selected = this.checked.map((item: any) => item.key);
-            this.input = this.selected.join(',');
-            await this._events.set(ProductsCategoriesActions.onSetSelected, {input: this.input});
-        },
-        setCategories: async () => {
-            this._categoriesModel.getCategories().then((categories) => {
-                this.categories = categories;
-                this._productsModel.parentCategories = this.categories;
-            });
-        },
-        Submit: {
-            onClick: async () => {
-                this.isSubmitted = true;
-                if (this.selected.length) await this.ProductsCategories.Submit._save();
-            },
-            _save: async () => {
-                await this._spinnerService.show();
-                const success = async (response: any) => {
-                    await this._notifierService.success(response.message);
-                    await this._spinnerService.hide();
-                    await this._events.set(ProductsCategoriesActions.onSaved, {categories: this.selected});
-                }
-                const error = async (response: any) => {
-                    await this._notifierService.error(response.message);
-                }
-                await this._productsModel.saveCategories(this.selected, this.product.id).then(async (response: any) => {
-                    response.success ? await success(response) : await error(response);
-                }).catch(async (_: any) => {
-                    /*await this._notifierService.error(this._productsStrings.message['notifyNetworkError']);*/
-                    await this._spinnerService.hide();
-                });
-            },
-        },
-        onSetNewCategory: async ($event: MouseEvent) => {
-            const parents = this.parents.map((item: { label: any; code: any; }) => {
-                return {name: item.label, code: item.code};
-            });
-            await this._events.set(ProductsCategoriesActions.onNewCategory, {selected: this.product, parents: parents, event: $event});
         }
     }
 }

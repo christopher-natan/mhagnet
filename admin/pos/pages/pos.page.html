@@ -1,0 +1,31 @@
+<div class="grid">
+    <div class="col-12 xl:col-7">
+        <div class="card">
+            <h5>Point Of Sale</h5>
+            <products-list-widget />
+        </div>
+    </div>
+    <div class="col-12 xl:col-5">
+        <div class="card">
+            <p-tabView [(activeIndex)]="activeIndex">
+                <p-tabPanel header="Items" [disabled]="isItemsTabDisabled">
+                    <pos-items-widget />
+                </p-tabPanel>
+                <p-tabPanel header="Customer" class="p-fluid"><pos-customer-widget /></p-tabPanel>
+                <p-tabPanel header="Invoice" class="p-fluid"><pos-invoice-widget /></p-tabPanel>
+                <p-tabPanel header="Delivery" class="p-fluid">
+                    <pos-delivery-widget />
+                </p-tabPanel>
+            </p-tabView>
+            <p-toolbar styleClass="mb-4" *ngIf="PosPage.hasProducts()">
+                <ng-template pTemplate="right">
+                    <div>
+                        <button pButton pRipple label="Place Order" icon="pi pi-save" class="p-button-success mr-2" (click)="PosPage.onSubmit()"></button>
+                        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-warning mr-2" (click)="PosPage.onCancel()"></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+        </div>
+    </div>
+</div>
+<spinner-widget />

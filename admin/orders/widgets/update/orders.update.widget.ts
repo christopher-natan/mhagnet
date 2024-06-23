@@ -9,14 +9,10 @@ import {Events} from "../../../events";
 import {OrdersModel} from "../../models/orders.model";
 import {FormsModule} from "@angular/forms";
 import {ResolverService} from "../../../services/resolver.service";
-import {ProductsAddFormActions} from "../../../products/widgets/form/add/add.form.widget";
-import {SpinnerService} from "../../../services/spinner.service";
-import {NotifierService} from "../../../services/notifier.service";
-import {ProductsStrings} from "../../../products/products.strings";
-import {TransactionTableActions} from "../table/transaction/transaction.table";
+import {TransactionsTableActions} from "../table/transactions/orders.transactions.table.widget";
 
 export enum OrdersUpdateActions {
-    onSaved = 'onSavedOrder',
+    onSaved = 'onSaved[OrdersUpdate]',
 }
 
 @Component({
@@ -32,45 +28,41 @@ export enum OrdersUpdateActions {
         FormsModule
     ],
     templateUrl: './orders.update.widget.html',
-    providers: [NotifierService]
+    providers: []
 })
 
 export class OrdersUpdateWidget implements OnInit {
-    orderStatus = [];
-    paymentStatus = [];
-    paymentMethod = [];
-    customer: any = {}
-    invoice: any = {}
-    delivery: any = {}
+    elements: any = {};
+    customer: any = {};
+    invoice: any = {};
+    delivery: any = {};
     isSubmitted: boolean = false;
     order: any = {};
 
     constructor(protected _events: Events,
-                protected _productsStrings: ProductsStrings,
                 protected _resolverService: ResolverService,
-                protected _ordersModel: OrdersModel,
-                protected _notifierService: NotifierService,
-                protected _spinnerService: SpinnerService) {
+                protected _ordersModel: OrdersModel) {
     }
 
     async ngOnInit() {
-        await this.TransactionTable.setReady();
-        await this.Elements.setReady();
         await this.OrdersUpdate.setReady();
-
+        await this.OrdersTransactionTable.setReady();
+        await this.Elements.setReady();
     }
 
-    Elements = {
+    OrdersUpdate = {
         setReady: async () => {
-            const parent = this.Elements;
-            await parent._onResolved();
+            const parent = this.OrdersUpdate;
             await parent._setDefault();
         },
-        _onResolved: async () => {
-            const resolverService = this._resolverService;
-            this.orderStatus = resolverService.orderStatus;
-            this.paymentStatus = resolverService.paymentStatus;
-            this.paymentMethod = resolverService.paymentMethod;
+        onSubmit: async () => {
+            const onSuccess = async (response: any) => await this._events.set(OrdersUpdateActions.onSaved, {response: response.data});
+            this.order.invoice = this.invoice;
+            this.order.delivery = this.delivery;
+            this.isSubmitted = true;
+            await this._ordersModel.saveOrder(this.order, onSuccess).then(async (_: any) => {
+                this.isSubmitted = false;
+            })
         },
         _setDefault: async () => {
             this.invoice.paymentStatus = 1;
@@ -80,13 +72,23 @@ export class OrdersUpdateWidget implements OnInit {
         }
     }
 
-    TransactionTable = {
+    Elements = {
         setReady: async () => {
-            const parent = this.TransactionTable;
+            const parent = this.Elements;
+            await parent._setElements();
+        },
+        _setElements: async () => {
+            this.elements = this._resolverService.elements;
+        }
+    }
+
+    OrdersTransactionTable = {
+        setReady: async () => {
+            const parent = this.OrdersTransactionTable;
             await parent.onRowSelected();
         },
         onRowSelected: async () => {
-            this._events.on(TransactionTableActions.onRowSelected, (results: any) => {
+            this._events.on(TransactionsTableActions.onRowSelected, (results: any) => {
                 this.order = {...results.selected};
                 this.order.invoice = {...this.order.invoice};
                 this.order.delivery = {...this.order.delivery};
@@ -95,38 +97,6 @@ export class OrdersUpdateWidget implements OnInit {
             });
         }
     }
-
-    OrdersUpdate = {
-        setReady: async () => {
-            const parent = this.OrdersUpdate;
-        },
-        Submit: {
-            onClick: async () => {
-                this.isSubmitted = true;
-                await this._spinnerService.show();
-                await this.OrdersUpdate.Submit._save();
-            },
-            _save: async () => {
-                const success = async (response: any) => {
-                    this.isSubmitted = false;
-                    await this._notifierService.success(response.message);
-                    await this._events.set(OrdersUpdateActions.onSaved, {response: response.data});
-                }
-                const error = async (response: any) => {
-                    this.isSubmitted = false;
-                    await this._notifierService.error(response.message);
-                }
-
-                this.order.invoice = this.invoice;
-                this.order.delivery = this.delivery;
-                await this._ordersModel.saveOrder(this.order).then(async (response: any) => {
-                    response.success ? await success(response) : await error(response);
-                    await this._spinnerService.hide();
-                }).catch(async (_: any) => {
-                    await this._notifierService.error(this._productsStrings.message['notifyNetworkError']);
-                    await this._spinnerService.hide();
-                });
-            },
-        },
-    }
 }
+
+/* refactored */

@@ -1,0 +1,37 @@
+<p-table #dt1
+         (onRowSelect)="CustomersListTable.setOnRowSelected($event)"
+         [(selection)]="selected" [selectionMode]="'single'"
+         [value]="customers" [paginator]="true" [rows]="8" responsiveLayout="scroll" [rowHover]="true">
+    <ng-template pTemplate="caption">
+        <div class="flex justify-content-between flex-column sm:flex-row">
+            <h5>Manage Customers</h5>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="name">
+                Sort <p-sortIcon field="name"></p-sortIcon>
+            </th>
+
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-customer>
+        <tr [pSelectableRow]="customer">
+            <td style="width: 25%; min-width: 7rem;">
+                <div class="grid">
+                    <div class="col col-1">
+                        <p-avatar image="{{'assets/images/' + customer.image}}"  shape="circle" size="large" />
+                    </div>
+                    <div class="col">
+                        <div>
+                            {{ customer.name }}
+                        </div>
+                        <div class="text-base mt-1">
+                           {{ customer.address.delivery }}
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>

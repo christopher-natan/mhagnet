@@ -1,0 +1,26 @@
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0">
+        <p-avatar image="assets/images/profile.jpg" styleClass="mr-2" size="xlarge" shape="circle"/>
+    </label>
+    <div class="col-12 md:col-7">
+        {{ customer?.name }}
+    </div>
+</div>
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0">Delivery Address:</label>
+    <div class="col-12 md:col-7">
+        {{ customer?.address.delivery }}
+    </div>
+</div>
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0">Email:</label>
+    <div class="col-12 md:col-7">
+        {{ customer?.contacts.email }}
+    </div>
+</div>
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0">Phone Number:</label>
+    <div class="col-12 md:col-7">
+        {{ customer?.contacts.phone }}
+    </div>
+</div>

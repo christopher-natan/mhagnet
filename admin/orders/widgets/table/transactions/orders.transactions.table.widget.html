@@ -1,0 +1,42 @@
+<p-table #dt1
+         (onRowSelect)="OrdersTransactionsTable.setOnRowSelected($event)"
+         [(selection)]="selected" [selectionMode]="'single'"
+         [value]="orders" [paginator]="true" [rows]="8" responsiveLayout="scroll" [rowHover]="true">
+    <ng-template pTemplate="caption">
+        <div class="grid flex justify-content-between align-items-center">
+            <div class="col-3"><h5 class="m-0">Manage Orders</h5></div>
+            <orders-toggles-widget />
+        </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="orNumber">OR Number
+                <p-columnFilter type="text" field="orNumber" display="menu" placeholder="Search by OR Number"></p-columnFilter>
+            </th>
+            <th pSortableColumn="dateOrdered">Date
+                <p-columnFilter type="date" field="dateOrdered" display="menu" />
+            </th>
+            <th pSortableColumn="invoice.totalAmount">Total
+                <p-sortIcon field="invoice.totalAmount"></p-sortIcon>
+            </th>
+            <th  pSortableColumn="invoice.orderStatus">Status
+                <p-sortIcon field="invoice.orderStatus"></p-sortIcon>
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-order>
+        <tr [pSelectableRow]="order">
+            <td style="width: 25%; min-width: 7rem;">
+                {{ order.orNumber }}
+            </td>
+            <td style="width: 25%; min-width: 7rem;">
+                {{ order.dateOrdered |  date: 'MM/dd/yyyy' }}
+            </td>
+            <td style="width: 15%; min-width: 8rem;">{{ order.invoice.totalAmount | currency:'PHP' }}</td>
+            <td style="width: 15%; min-width: 8rem;">
+                <span class="{{'order-badge status-' + order.invoice.orderStatus}}">{{ order.invoice.orderStatus | elements: 'orderStatus' }}</span>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+

@@ -12,12 +12,10 @@ import {DialogModule} from "primeng/dialog";
 import {OverlayPanel, OverlayPanelModule} from "primeng/overlaypanel";
 import {TableModule} from "primeng/table";
 import {RippleModule} from "primeng/ripple";
-import {NotifierService} from "../../../../services/notifier.service";
-import {SpinnerService} from "../../../../services/spinner.service";
 import {ProductsCategoriesActions} from "../products.categories.widget";
 
 export enum CategoriesFormActions {
-    onSaved = "onSavedCategories"
+    onSaved = "onSavedCategories[CategoriesForm]"
 }
 
 @Component({
@@ -36,7 +34,7 @@ export enum CategoriesFormActions {
         TableModule,
         RippleModule
     ],
-    providers: [NotifierService],
+    providers: [],
     templateUrl: './categories.form.widget.html',
 })
 export class CategoriesFormWidget implements OnInit {
@@ -48,8 +46,6 @@ export class CategoriesFormWidget implements OnInit {
 
     constructor(
         protected _events: Events,
-        protected _spinnerService: SpinnerService,
-        protected _notifierService: NotifierService,
         protected _categoriesModel: CategoriesModel) {
     }
 
@@ -74,32 +70,18 @@ export class CategoriesFormWidget implements OnInit {
         _setDefault: async () => {
             this.category = {label: '', parentId: ''};
         },
-        Submit: {
-            onClick: async () => {
-                this.isSubmitted = true;
-                if (this.category.label.trim().length) await this.CategoriesForm.Submit._save();
-            },
-            _save: async () => {
-                await this._spinnerService.show();
-                const success = async (response: any) => {
-                    await this._notifierService.success(response.message);
-                    await this._spinnerService.hide();
-                    await this._events.set(CategoriesFormActions.onSaved, {isSuccess: true});
-                    await this.CategoriesForm._setDefault();
-                    this.overlayPanel.hide();
-                    this.isSubmitted = false;
-                }
-                const error = async (response: any) => {
-                    await this._notifierService.error(response.message);
-                    await this._spinnerService.hide();
-                }
-                await this._categoriesModel.saveCategories(this.category).then(async (response: any) => {
-                    response.success ? await success(response) : await error(response);
-                }).catch(async (response: any) => {
-                    await this._notifierService.error(response.message);
-                    await this._spinnerService.hide();
-                });
+        onSubmit: async () => {
+            this.isSubmitted = true;
+            if (!this.category.label.trim().length) return;
+            const onSuccess = async (response: any) => {
+                await this._events.set(CategoriesFormActions.onSaved, {isSuccess: true});
+                await this.CategoriesForm._setDefault();
+                this.overlayPanel.hide();
+                this.isSubmitted = false;
             }
+            await this._categoriesModel.saveCategory(this.category, onSuccess).then(async (_: any) => {
+                this.isSubmitted = false;
+            })
         }
     }
 

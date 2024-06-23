@@ -1,0 +1,34 @@
+<p-table [value]="orders" [paginator]="true" [rows]="8" responsiveLayout="scroll"
+         [rowHover]="true"
+         [(selection)]="order"
+         [selectionMode]="'single'"
+         (onRowSelect)="CustomersHistoryTable.onRowSelect($event)">
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="orNumber">OR Number</th>
+            <th pSortableColumn="dateOrdered">Date Ordered
+                <p-sortIcon field="dateOrdered"></p-sortIcon>
+            </th>
+            <th pSortableColumn="quantity" class="text-center">Total Quantity</th>
+            <th pSortableColumn="setTotal" class="text-center">Total Amount</th>
+            <th></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-order>
+        <tr [pSelectableRow]="order">
+            <td style="min-width: 7rem;">
+                {{ order.orNumber }}
+            </td>
+            <td class="flex align-items-center justify-content-start">
+                {{ order.dateOrdered | readableDate }}
+            </td>
+            <td class="text-center">
+                {{ order.invoice.totalQuantity }}
+            </td>
+            <td class="text-center">{{ order.invoice.totalAmount | currency:'PHP' }}</td>
+            <td><i class="pi pi-list"></i></td>
+        </tr>
+    </ng-template>
+</p-table>
+<customers-items-widget />
+

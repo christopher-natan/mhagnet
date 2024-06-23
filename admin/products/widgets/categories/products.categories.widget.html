@@ -1,18 +1,18 @@
 <div class="p-fluid">
     <div class="field">
-        <div class="flex align-items-center flex-wrap" [ngClass]="{'justify-content-end': !standalone}">
+        <div class="flex align-items-center flex-wrap" [ngClass]="{'justify-content-end': !isStandalone}">
             <div class="flex align-items-center flex-wrap">
-                <button pButton pRipple icon="pi pi-plus" class="mr-3" (click)="ProductsCategories.onSetNewCategory($event)"></button>
+                <button pButton pRipple icon="pi pi-plus" class="mr-3" (click)="ProductsCategories.onClickNewCategory($event)"></button>
                 <span>Add New Category</span>
             </div>
         </div>
 
-        <p-scrollPanel [style]="{ width: '100%', height: !standalone ? '600px' : '400px' }">
+        <p-scrollPanel [style]="{ width: '100%', height: !isStandalone ? '600px' : '400px' }">
             <p-tree [value]="categories" selectionMode="checkbox" [(selection)]="checked"
-                    (onNodeSelect)="ProductsCategories.setSelected($event)"
-                    (onNodeUnselect)="ProductsCategories.setSelected($event)"></p-tree>
+                    (onNodeSelect)="ProductsCategories.onNodeSelect($event)"
+                    (onNodeUnselect)="ProductsCategories.onNodeSelect($event)"></p-tree>
         </p-scrollPanel>
-        <input type="text" pInputText id="categories" [(ngModel)]="input"
+        <input type="text" pInputText id="categories" [(ngModel)]="selectedNodes"
                required hidden
                [ngClass]="{'ng-invalid ng-dirty' : isSubmitted && !selected.length}"/>
         <div class="mt-3">
@@ -22,9 +22,9 @@
     </div>
 </div>
 
-<p-toolbar styleClass="mb-4" *ngIf="!standalone">
+<p-toolbar styleClass="mb-4" *ngIf="!isStandalone">
     <ng-template pTemplate="right">
-        <button pButton pRipple label="Save" icon="pi pi-save" class="p-button-success mr-2" (click)="ProductsCategories.Submit.onClick()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-save" class="p-button-success mr-2" (click)="ProductsCategories.onSubmit()"></button>
     </ng-template>
 </p-toolbar>
-<categories-form-widget />
+<categories-form-widget/>

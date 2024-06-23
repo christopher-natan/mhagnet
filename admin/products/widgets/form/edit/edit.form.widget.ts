@@ -10,15 +10,14 @@ import {RadioButtonModule} from "primeng/radiobutton";
 import {RippleModule} from "primeng/ripple";
 import {SharedModule} from "primeng/api";
 import {TabViewModule} from "primeng/tabview";
-import {CategoriesListActions, CategoriesListWidget} from "app/categories/widgets/list/categories.list.widget";
+
 import {Products, ProductsModel} from "app/products/models/products.model";
 import {ProductsTableActions} from "../../table/products.table.widget";
 import {Events} from "app/events";
 import {MenuModule} from "primeng/menu";
 import {ToolbarModule} from "primeng/toolbar";
-import {ProductsStrings} from "../../../products.strings";
-import {NotifierService} from "../../../../services/notifier.service";
-import {SpinnerService} from "../../../../services/spinner.service";
+import {NotifierActions} from "../../../../widgets/spinner/spinner.widget";
+import {Strings} from "app/strings";
 
 export enum ProductsEditFormActions {
     onSaved = 'onSavedProducts',
@@ -41,12 +40,11 @@ export enum ProductsEditFormActions {
         SharedModule,
         NgClass,
         TabViewModule,
-        CategoriesListWidget,
         MenuModule,
         ToolbarModule
     ],
     templateUrl: './edit.form.widget.html',
-    providers: [NotifierService]
+    providers: []
 })
 export class EditFormWidget implements OnInit {
     product: Products = {};
@@ -55,14 +53,11 @@ export class EditFormWidget implements OnInit {
 
     constructor(protected _events: Events,
                 protected _productsModel: ProductsModel,
-                protected _notifierService: NotifierService,
-                protected _spinnerService: SpinnerService,
-                protected _productsStrings: ProductsStrings) {
+                protected _strings: Strings) {
     }
 
     async ngOnInit() {
         await this.ProductsTable.setReady();
-        await this.CategoriesList.setReady();
         await this.ProductsEditForm.setReady();
     }
 
@@ -82,44 +77,30 @@ export class EditFormWidget implements OnInit {
         setReady: async () => {
             const parent = this.ProductsEditForm;
         },
-        Submit: {
-            onClick: async () => {
-                this.isSubmitted = true;
-                if (!this._productsModel.isValidForm(this.product)) {
-                    return await this._notifierService.error(this._productsStrings.message['notifyCheckARequired']);
-                }
-                await this._spinnerService.show();
-                await this.ProductsEditForm.Submit._save();
-            },
-            _save: async () => {
-                const success = async (response: any) => {
-                    await this._notifierService.success(response.message);
-                    await this._events.set(ProductsEditFormActions.onSaved, {selected: this.product});
-                    this.product = {...this.product};
-                }
-                const error = async (response: any) => {
-                    await this._notifierService.error(response.message);
-                }
-                await this._productsModel.saveProduct(this.product).then(async (response: any) => {
-                    response.success ? await success(response) : await error(response);
-                    await this._spinnerService.hide();
-                }).catch(async (_: any) => {
-                    await this._notifierService.error(this._productsStrings.message['notifyNetworkError']);
-                    await this._spinnerService.hide();
-                });
-            },
-        },
-    }
+        onSubmit: async () => {
+            this.isSubmitted = true;
+            if (!this.ProductsEditForm._isValidForm(this.product)) {
+                return await this._events.set(NotifierActions.onError, {message: this._strings.message['checkRequiredFields']});
+            }
 
-    CategoriesList = {
-        setReady: async () => {
-            const parent = this.CategoriesList;
-            await parent._onNodeSelected();
-        },
-        _onNodeSelected: async () => {
-            this._events.on(CategoriesListActions.onNodeSelected, (results: any) => {
-                this.product.categories = Object.values(results).join(',');
+            const onSuccess = async (response: any) => {
+                await this._events.set(ProductsEditFormActions.onSaved, {selected: this.product});
+                this.product = {...this.product};
+                this.isSubmitted = false;
+            }
+            await this._productsModel.saveProduct(this.product, onSuccess).then(async (_: any) => {
             })
         },
+        _isValidForm: (product: Products) => {
+            product = {...{name: '', description: '', price: null, quantity: null, categories: ''}, ...product};
+            const errors = [];
+            for (const key in product) {
+                const value = product[key];
+                if (value === null || value === undefined || value === '') {
+                    errors.push(key);
+                }
+            }
+            return !errors.length;
+        }
     }
 }

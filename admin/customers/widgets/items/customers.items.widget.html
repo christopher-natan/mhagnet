@@ -1,0 +1,15 @@
+<p-dialog
+    [header]="orNumber"
+    [modal]="true"
+    [(visible)]="isVisible"
+    [style]="{ width: '50rem' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
+    <p-tabView>
+        <p-tabPanel header="Items">
+             <orders-items-table-widget/>
+        </p-tabPanel>
+        <p-tabPanel header="Invoice">
+            <orders-invoice-widget />
+        </p-tabPanel>
+    </p-tabView>
+</p-dialog>

@@ -23,7 +23,7 @@
         <div class="formgrid grid">
             <div class="field col">
                 <label for="price"><strong>Price</strong></label>
-                <p-inputNumber id="price" [(ngModel)]="product.price" mode="currency" currency="USD"
+                <p-inputNumber id="price" [(ngModel)]="product.price" mode="currency" currency="PHP"
                                required
                                [ngClass]="{'ng-invalid ng-dirty' : isSubmitted && !product.price}"
                                locale="en-US"></p-inputNumber>
@@ -41,7 +41,7 @@
     </div>
     <p-toolbar styleClass="mb-4 mt-8">
         <ng-template pTemplate="right">
-            <button pButton pRipple label="Save" icon="pi pi-save" class="p-button-success mr-2" (click)="ProductsEditForm.Submit.onClick()"></button>
+            <button pButton pRipple label="Save" icon="pi pi-save" class="p-button-success mr-2" (click)="ProductsEditForm.onSubmit()"></button>
         </ng-template>
     </p-toolbar>
 

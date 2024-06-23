@@ -13,17 +13,16 @@ import {ProductsTableActions} from "app/products/widgets/table/products.table.wi
 import {Products, ProductsModel} from "app/products/models/products.model";
 import {DialogModule} from "primeng/dialog";
 import {UploadImageActions} from "app/products//widgets/image/upload/upload.image.widget";
-import {ProductsStrings} from "../../../products.strings";
 import {BytesConvertPipe} from "../../../../pipes/bytes.convert";
 import {ProductImagePipe} from "../../../../pipes/product.image.pipe";
-import {SpinnerService} from "../../../../services/spinner.service";
-import {NotifierService} from "../../../../services/notifier.service";
 import {ConfirmPopupModule} from "primeng/confirmpopup";
 import {MessagesModule} from "primeng/messages";
 import {ImageModule} from "primeng/image";
+import {NotifierActions} from "../../../../widgets/spinner/spinner.widget";
+import {Strings} from "../../../../strings";
 
 export enum ListImageActions {
-    onDeleted = 'onImageDeleted',
+    onDeleted = 'onImageDeleted[ListImage]',
 }
 
 @Component({
@@ -48,7 +47,7 @@ export enum ListImageActions {
         MessagesModule,
         ImageModule
     ],
-    providers: [NotifierService, ConfirmationService],
+    providers: [ConfirmationService],
     templateUrl: './list.image.widget.html'
 })
 export class ListImageWidget implements OnInit {
@@ -58,10 +57,8 @@ export class ListImageWidget implements OnInit {
 
     constructor(protected _events: Events,
                 protected _productsModel: ProductsModel,
-                protected _notifierService: NotifierService,
-                protected _spinnerService: SpinnerService,
                 protected _confirmationService: ConfirmationService,
-                protected _productsString: ProductsStrings) {
+                protected _strings: Strings) {
     }
 
     async ngOnInit() {
@@ -114,23 +111,12 @@ export class ListImageWidget implements OnInit {
             });
         },
         _confirmed: async (name: string) => {
-            if (this.images.length < 2) return this._notifierService.error(this._productsString.message['notifyNoDAllowedDeleteImage']);
-
-            const success = async (response: any, name: string) => {
+            if (this.images.length < 2) return await this._events.set(NotifierActions.onError, {message: this._strings.message['notAllowedDeleteImage']});
+            const onSuccess = async (_: any) => {
                 this.images = this.images.filter((item: any) => item.name !== name);
                 await this._events.set(ListImageActions.onDeleted, {images: this.images});
-                await this._notifierService.success(response.message);
             }
-            const error = async (response: any) => {
-                await this._spinnerService.hide();
-                await this._notifierService.error(response.message);
-            }
-            await this._spinnerService.show();
-            await this._productsModel.deleteImage(this.product.id, name).then(async (response: any) => {
-                await this._spinnerService.hide();
-                response.success ? await success(response, name)
-                    : await error(response);
-
+            await this._productsModel.deleteImage(this.product.id, name, onSuccess).then(async (_: any) => {
             });
         },
         setMessage: async () => {

@@ -1,0 +1,30 @@
+<p-table [value]="products" [paginator]="true" [rows]="8" responsiveLayout="scroll" [rowHover]="true">
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="code">Code</th>
+            <th pSortableColumn="name">Name
+                <p-sortIcon field="setTotal"></p-sortIcon>
+            </th>
+            <th pSortableColumn="quantity" class="text-center">Quantity</th>
+            <th pSortableColumn="setTotal" class="text-center">Total</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-product>
+        <tr>
+            <td style="min-width: 7rem;">
+                {{ product.code }}
+            </td>
+            <td style="width: 100%" class="flex align-items-center justify-content-start">
+                <img [src]="product.images | productImage" [alt]="" width="38" height="38"
+                     style="border-radius: 100%"
+                     class="shadow-4 mr-3"/>
+                {{ product.name }}
+            </td>
+            <td style="width: 40px;" class="text-center">
+                {{ product.setQuantity }}
+            </td>
+            <td style="width: 150px;" class="text-center">{{ product.setTotal | currency:'PHP' }}</td>
+        </tr>
+    </ng-template>
+</p-table>
+

@@ -1,0 +1,48 @@
+<p-divider layout="horizontal" align="left"><span class="p-tag">Calculation</span></p-divider>
+<div class="mt-5"></div>
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0">Total Quantity: </label>
+    <div class="col-12 md:col-7">{{ invoice.totalQuantity }}</div>
+</div>
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0">Total Amount: </label>
+    <div class="col-12 md:col-7">{{ invoice.totalAmount | currency: 'PHP' }}</div>
+</div>
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0">Store Discount: </label>
+    <div class="col-12 md:col-7">
+        {{ invoice.storeDiscount | currency: 'PHP' }}
+    </div>
+</div>
+<div class="w-6">
+    <hr/>
+</div>
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0"><strong>Sub Total: </strong></label>
+    <div class="col-12 md:col-7">{{ invoice.subTotal | currency: 'PHP' }}</div>
+</div>
+<div class="w-5 mb-6"></div>
+
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0">Coupon Discount: </label>
+    <div class="col-12 md:col-7">
+        {{ invoice.couponDiscount | currency: 'PHP' }}
+    </div>
+</div>
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0">Delivery Fee: </label>
+    <div class="col-12 md:col-7">
+        {{ invoice.deliveryFee | currency: 'PHP' }}
+    </div>
+</div>
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0">TAX / VAT: </label>
+    <div class="col-12 md:col-7">{{ invoice.vat | currency: 'PHP' }}</div>
+</div>
+<div class="w-6">
+    <hr/>
+</div>
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0"><strong>Overall Total: </strong></label>
+    <div class="col-12 md:col-7">{{ invoice.overAllTotal | currency: 'PHP' }}</div>
+</div>

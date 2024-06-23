@@ -1,8 +1,5 @@
 import {Injectable} from "@angular/core";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {firstValueFrom} from "rxjs";
-import {Configs} from "../../configs";
-import {Products} from "../../products/models/products.model";
+import {Models} from "../../models/models";
 
 export interface OrdersItems {
     id: string;
@@ -28,25 +25,18 @@ export interface Orders {
     updatedAt: Date;
 }
 
+type Callback = (request: any) => void;
+
 @Injectable({providedIn: "root"})
-export class OrdersModel {
-    _url: string = Configs.apiBase;
-    constructor(protected http: HttpClient) {
+export class OrdersModel extends Models {
+
+    public findAll = async (onSuccess: Callback, onError?: Callback | undefined) => {
+        const params = {path: 'order', onError: onError, onSuccess: onSuccess}
+        return await this.Requests.get(params);
     }
 
-    public findAll = async () => {
-        return await firstValueFrom(this.http.get<any>(this._url + 'order'));
-    }
-
-    public saveOrder = async (product: Products) => {
-        const url = this._url + 'order';
-        const headers = this._getHeaders();
-        return await firstValueFrom(this.http.post(url, product, {headers})).catch((result) => {
-            return result;
-        });
-    }
-
-    private _getHeaders = (productId?: string) => {
-        return new HttpHeaders({'Content-Type': 'application/json', 'Product-Id': productId ? productId : ''});
+    public saveOrder = async (order: Orders, onSuccess: Callback, onError?: Callback | undefined) => {
+        const params = {path: 'order', onError: onError, onSuccess: onSuccess, data: order}
+        return await this.Requests.post(params);
     }
 }

@@ -2,19 +2,19 @@
 <div class="field grid mt-5">
     <label class="col-12 mb-2 md:col-4 md:mb-0">Order Status</label>
     <div class="col-12 md:col-6">
-        <p-dropdown [options]="orderStatus"  [(ngModel)]="invoice.orderStatus"></p-dropdown>
+        <p-dropdown [options]="elements.orderStatus" [(ngModel)]="invoice.orderStatus"></p-dropdown>
     </div>
 </div>
 <div class="field grid">
     <label class="col-12 mb-2 md:col-4 md:mb-0">Payment Status</label>
     <div class="col-12 md:col-6">
-        <p-dropdown [options]="paymentStatus"  [(ngModel)]="invoice.paymentStatus"></p-dropdown>
+        <p-dropdown [options]="elements.paymentStatus" [(ngModel)]="invoice.paymentStatus"></p-dropdown>
     </div>
 </div>
 <div class="field grid">
     <label class="col-12 mb-2 md:col-4 md:mb-0">Payment Method</label>
     <div class="col-12 md:col-6">
-        <p-dropdown [options]="paymentMethod"  [(ngModel)]="invoice.paymentMethod"></p-dropdown>
+        <p-dropdown [options]="elements.paymentMethod" [(ngModel)]="invoice.paymentMethod"></p-dropdown>
     </div>
 </div>
 <div class="field grid">
@@ -26,7 +26,7 @@
 <p-toolbar styleClass="mb-4">
     <ng-template pTemplate="right">
         <div>
-            <button pButton pRipple label="Save" icon="pi pi-save" class="p-button-success mr-2" (click)="OrdersUpdate.Submit.onClick()"></button>
+            <button pButton pRipple label="Save" icon="pi pi-save" class="p-button-success mr-2" (click)="OrdersUpdate.onSubmit()"></button>
         </div>
     </ng-template>
 </p-toolbar>

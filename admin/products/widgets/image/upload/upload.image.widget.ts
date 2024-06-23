@@ -6,15 +6,15 @@ import {ToastModule} from "primeng/toast";
 import {BadgeModule} from "primeng/badge";
 import {Events} from "app/events";
 import {Configs} from "app/configs";
-import {ProductsStrings} from "../../../products.strings";
 import {ProductsTableActions} from "../../table/products.table.widget";
 import {Products} from "../../../models/products.model";
 import {HttpHeaders} from "@angular/common/http";
-import {NotifierService} from "../../../../services/notifier.service";
 import {SpinnerService} from "../../../../services/spinner.service";
+import {Strings} from "../../../../strings";
+import {NotifierActions} from "../../../../widgets/spinner/spinner.widget";
 
 export enum UploadImageActions {
-    onUploadSuccess = 'onUploadSuccess',
+    onUploadSuccess = 'onUploadSuccess[UploadImage]',
 }
 
 @Component({
@@ -30,7 +30,7 @@ export enum UploadImageActions {
         NgClass
     ],
     templateUrl: './upload.image.widget.html',
-    providers: [NotifierService]
+    providers: []
 })
 export class UploadImageWidget implements OnInit {
     protected readonly Configs = Configs;
@@ -39,8 +39,7 @@ export class UploadImageWidget implements OnInit {
     product: Products = {};
 
     constructor(protected _events: Events,
-                protected _productsString: ProductsStrings,
-                protected _notifierService: NotifierService,
+                protected _strings: Strings,
                 protected _spinnerService: SpinnerService) {
     }
 
@@ -65,22 +64,20 @@ export class UploadImageWidget implements OnInit {
         onUpload: async ($event: any) => {
             const body = $event.originalEvent.body;
             if (body.error) {
-                await this._notifierService.error(body.message)
-                await this._events.set(UploadImageActions.onUploadSuccess, {isSuccess: false});
+                await this.UploadImage.onError({}, {}, body.message);
             }
             if (body.success) {
-                await this._notifierService.success(body.message)
+                await this._spinnerService.hide();
+                await this._events.set(NotifierActions.onSuccess, {message: body.message});
                 await this._events.set(UploadImageActions.onUploadSuccess, {
                     isSuccess: true,
                     images: body.data.images
                 });
             }
-            await this._spinnerService.hide();
         },
-        onError: async ($event: any, fileUpload: any) => {
+        onError: async ($event: any, fileUpload: any, message?: any) => {
             await this._spinnerService.hide();
-            await this._notifierService.error(this._productsString.message['notifyUploadError'])
-            await this._events.set(UploadImageActions.onUploadSuccess, {isSuccess: false});
+            await this._events.set(NotifierActions.onError, {message: message === undefined ? this._strings.message['errorOccurred'] : message});
         },
         onBeforeUpload: async () => {
             await this._spinnerService.show();

@@ -11,22 +11,20 @@ import {DialogModule} from "primeng/dialog";
 import {CurrencyPipe, NgIf} from "@angular/common";
 import {UploadImageActions} from "../image/upload/upload.image.widget";
 import {ListImageActions} from "../image/list/list.image.widget";
-import {ProductsStrings} from "../../products.strings";
 import {AppUtil} from "app/utils/app.util";
 import {InputSwitchModule} from "primeng/inputswitch";
 import {FormsModule} from "@angular/forms";
 import {ConfirmPopupModule} from "primeng/confirmpopup";
 import {ProductImagePipe} from "../../../pipes/product.image.pipe";
-import {SpinnerService} from "../../../services/spinner.service";
-import {NotifierService} from "../../../services/notifier.service";
 import {ProductsCategoriesActions} from "../categories/products.categories.widget";
 import {ProductsAddFormActions} from "../form/add/add.form.widget";
+import {Strings} from "../../../strings";
 
 export enum ProductsTableActions {
-    onRowSelected = 'onRowSelected',
-    onDeleted = 'onDeletedProduct',
-    onFindAll = 'onFindAllProducts',
-    onClickedAddNew = 'onClickedAddNew',
+    onRowSelected = 'onRowSelected[ProductsTable]',
+    onDeleted = 'onDeleted[ProductsTable]',
+    onFindAll = 'onFindAll[ProductsTable]',
+    onClickedAddNew = 'onClickedAddNew[ProductsTable]',
 }
 
 @Component({
@@ -45,7 +43,7 @@ export enum ProductsTableActions {
         ConfirmPopupModule,
         ProductImagePipe
     ],
-    providers: [ConfirmationService, NotifierService],
+    providers: [ConfirmationService],
     templateUrl: './products.table.widget.html'
 })
 export class ProductsTableWidget implements OnInit {
@@ -69,9 +67,7 @@ export class ProductsTableWidget implements OnInit {
 
     constructor(protected _events: Events,
                 protected _productsModel: ProductsModel,
-                protected _productsStrings: ProductsStrings,
-                protected _spinnerService: SpinnerService,
-                protected _notifierService: NotifierService,
+                protected _strings: Strings,
                 protected _confirmationService: ConfirmationService) {
     }
 
@@ -90,21 +86,17 @@ export class ProductsTableWidget implements OnInit {
             await parent._setProducts();
         },
         _setProducts: async () => {
-            await this._spinnerService.show();
-            const success = async (response: any) => {
+            const onSuccess = async (response: any) => {
                 this.products = response.data as Products[];
                 this.product = this.products[0];
                 this.products.map((item) => this.isAvailable[item.id] = Boolean(item.isAvailable));
                 await this._events.set(ProductsTableActions.onRowSelected, {selected: this.product});
             }
-            const error = async (response: any) => await this._notifierService.error(response.message);
-            this._productsModel.findAll().then(async (response: any) => {
-                response.success ? await success(response) : await error(response);
-                await this._spinnerService.hide();
+            this._productsModel.findAll(onSuccess).then(async (_: any) => {
                 await this._events.set(ProductsTableActions.onFindAll, {hasFindAll: true});
-            }).catch(async (_: any) => this.ProductsTable.Error._catch());
+            });
         },
-        setOnRowSelected: async ($event: TableRowSelectEvent) => {
+        onRowSelect: async ($event: TableRowSelectEvent) => {
             await this._events.set(ProductsTableActions.onRowSelected, {selected: $event.data});
         },
         Delete: {
@@ -115,7 +107,7 @@ export class ProductsTableWidget implements OnInit {
                 this._confirmationService.confirm({
                     key: product.id,
                     target: $event.target || new EventTarget,
-                    message: `Are you sure that you want to delete?`,
+                    message: this._strings.message['sureToProceed'],
                     icon: 'pi pi-exclamation-triangle',
                     accept: async () => {
                         this.product = {...product};
@@ -126,47 +118,32 @@ export class ProductsTableWidget implements OnInit {
                 });
             },
             _confirmed: async () => {
-                await this._spinnerService.show();
-                const success = async (response: any) => {
+                const onSuccess = async (response: any) => {
                     this.products = [...this.products];
                     this.products = this.products.filter(val => val.id !== this.product.id);
-                    await this._notifierService.success(response.message);
-                    await this._events.set(ProductsTableActions.onDeleted, this.product);
                     this.product = this.products[0];
+                    await this._events.set(ProductsTableActions.onDeleted, this.product);
                     await this._events.set(ProductsTableActions.onRowSelected, {data: this.product, selected: this.product});
                 }
-                const error = async (response: any) => {
-                    await this._notifierService.error(response.message);
-                }
-                this._productsModel.deleteProduct(this.product).then(async (response: any) => {
-                    response.success ? await success(response) : await error(response);
-                    await this._spinnerService.hide();
-                }).catch(async (_: any) => this.ProductsTable.Error._catch());
+                this._productsModel.deleteProduct(this.product, onSuccess).then(async (_: any) => {
+                });
             },
         },
-        Error: {
-            _catch: async () => {
-                await this._notifierService.error(this._productsStrings.message['notifyNetworkError']);
-                await this._spinnerService.hide();
-            },
-        },
-        onChangedIsAvailable: ($event: any, product: Products) => {
-            const success = async (_: any) => {
+        onChangeIsAvailable: ($event: any, product: Products) => {
+            const onSuccess = async (_: any) => {
                 this.product = product;
                 this.products[AppUtil.findIndexById(this.products, this.product.id)] = this.product;
                 await this._events.set(ProductsTableActions.onRowSelected, {selected: this.product});
             }
-            const error = async (response: any) => await this._notifierService.error(response.message);
             product = {...product};
             product.isAvailable = Number($event.checked);
-            this._productsModel.saveIsAvailable(product).then(async (response: any) => {
-                response.success ? await success(response) : await error(response);
-            }).catch(async (_: any) => this.ProductsTable.Error._catch());
+            this._productsModel.saveIsAvailable(product, onSuccess).then(async (_: any) => {
+            });
         },
-        filterProducts(table: Table, $event: Event) {
+        onInputFilter(table: Table, $event: Event) {
             table.filterGlobal(($event.target as HTMLInputElement).value, 'contains');
         },
-        setOnClickAddNew: async () => {
+        onClickAddNew: async () => {
             await this._events.set(ProductsTableActions.onClickedAddNew, {isClicked: true});
         }
     }
@@ -174,15 +151,16 @@ export class ProductsTableWidget implements OnInit {
     ProductsUploadImage = {
         setReady: async () => {
             const parent = this.ProductsUploadImage;
-            await parent._onUploaded();
+            await parent._onUploadSuccess();
         },
-        _onUploaded: async () => {
+        _onUploadSuccess: async () => {
             this._events.on(UploadImageActions.onUploadSuccess, async (result: any) => {
                 if (!result.isSuccess) return;
                 this.product = {...this.product};
                 this.product.images = [...result.images, ...this.product.images];
                 this.products[AppUtil.findIndexById(this.products, this.product.id)] = this.product;
                 await this.ProductsEditForm.refreshFilter();
+                await this._events.set(ProductsTableActions.onRowSelected, {selected: this.product});
             });
         }
     }

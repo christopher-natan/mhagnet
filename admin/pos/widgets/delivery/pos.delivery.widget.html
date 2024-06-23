@@ -1,0 +1,8 @@
+<p>You can schedule the delivery of these items and you will be alerted one minute before the deadline.</p>
+<div class="field grid mt-9">
+    <label  class="col-12 mb-2 md:col-4 md:mb-0">Delivery Date</label>
+    <div class="col-12 md:col-6">
+        <p-calendar [showIcon]="true" [(ngModel)]="delivery.deliveryDate" (onSelect)="PosDelivery.onSelect($event)"></p-calendar>
+    </div>
+</div>
+

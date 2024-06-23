@@ -1,0 +1,54 @@
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0">Name:</label>
+    <div class="col-12 md:col-7">
+        <input [(ngModel)]="customer.name" type="text" pInputText id="name"
+               required autofocus
+               placeholder="Enter the customer name"
+               [ngClass]="{'ng-invalid ng-dirty' : isSubmitted && !customer.name}">
+        <small class="ng-dirty ng-invalid" *ngIf="isSubmitted && !customer.name">Name is
+            required.</small>
+    </div>
+</div>
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0">Delivery Address:</label>
+    <div class="col-12 md:col-7">
+        <textarea pInputTextarea rows="3" [(ngModel)]="customer.address.delivery"
+                  required autofocus
+                  placeholder="Customer delivery address"
+                  [ngClass]="{'ng-invalid ng-dirty' : isSubmitted && !customer.address.delivery}"
+                  cols="20" id="deliveryAddress"></textarea>
+        <small class="ng-dirty ng-invalid" *ngIf="isSubmitted && !customer.address.delivery">Delivery address is
+            required.</small>
+    </div>
+</div>
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0">Email:</label>
+    <div class="col-12 md:col-7">
+        <input
+            pInputText
+            type="text"
+            required
+            placeholder="Customer email"
+            [ngClass]="{'ng-invalid ng-dirty' : isSubmitted && !customer.contacts.email}"
+            [(ngModel)]="customer.contacts.email" id="email"/>
+        <small class="ng-dirty ng-invalid" *ngIf="isSubmitted && !customer.contacts.email">Email is
+            required.</small>
+    </div>
+</div>
+<div class="field grid">
+    <label class="col-12 mb-2 md:col-4 md:mb-0">Phone Number:</label>
+    <div class="col-12 md:col-7">
+        <input
+            pInputText
+            placeholder="Customer phone number"
+            [(ngModel)]="customer.contacts.phone"  id="phone"/>
+    </div>
+</div>
+
+<p-toolbar styleClass="mt-8">
+    <ng-template pTemplate="right">
+        <div>
+            <button pButton pRipple label="Save" icon="pi pi-save" class="p-button-success mr-2" (click)="CustomersUpdate.onSubmit()"></button>
+        </div>
+    </ng-template>
+</p-toolbar>

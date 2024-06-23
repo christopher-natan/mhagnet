@@ -1,18 +1,16 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MessageService} from 'primeng/api';
 import {Events} from "app/events";
-import {ProductsStrings} from "../products.strings";
 import {ProductsAddFormActions} from "../widgets/form/add/add.form.widget";
 
 @Component({
     templateUrl: './products.page.html',
     providers: [MessageService]
 })
-export class ProductsPage implements OnInit {
+export class ProductsPage implements OnInit, OnDestroy {
     activeIndex: number = 0;
 
-    constructor(protected _events: Events,
-                protected _productsStrings: ProductsStrings) {
+    constructor(protected _events: Events) {
     }
 
     async ngOnInit() {
@@ -29,5 +27,9 @@ export class ProductsPage implements OnInit {
                 this.activeIndex = 3;
             });
         }
+    }
+
+    async ngOnDestroy() {
+        await this._events.unsubscribe();
     }
 }

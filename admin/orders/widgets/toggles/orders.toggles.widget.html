@@ -1,0 +1,49 @@
+<div class="col flex align-items-end toggles gap-1">
+    <p-toggleButton
+        onLabel="Pending"
+        offLabel="Pending"
+        onIcon="pi pi-chevron-circle-right"
+        offIcon="pi pi-circle-off"
+        styleClass="w-9rem status-1"
+        (click)="OrdersTogglesTable.onClickStatus()"
+        [(ngModel)]="orderStatus[1]"
+    />
+    <p-toggleButton
+        onLabel="Confirmed"
+        offLabel="Confirmed"
+        onIcon="pi pi-chevron-circle-right"
+        offIcon="pi pi-circle-off"
+        styleClass="w-9rem status-2"
+        (click)="OrdersTogglesTable.onClickStatus()"
+        [(ngModel)]="orderStatus[2]"
+    />
+
+    <p-toggleButton
+        onLabel="Packaging"
+        offLabel="Packaging"
+        onIcon="pi pi-chevron-circle-right"
+        offIcon="pi pi-circle-off"
+        styleClass="w-9rem status-3"
+        (click)="OrdersTogglesTable.onClickStatus()"
+        [(ngModel)]="orderStatus[3]"
+    />
+
+    <p-toggleButton
+        onLabel="Delivery"
+        offLabel="Delivery"
+        onIcon="pi pi-chevron-circle-right"
+        offIcon="pi pi-circle-off"
+        styleClass="w-9rem status-4"
+        (click)="OrdersTogglesTable.onClickStatus()"
+        [(ngModel)]="orderStatus[4]"
+    />
+    <p-toggleButton
+        onLabel="Delivered"
+        offLabel="Delivered"
+        onIcon="pi pi-chevron-circle-right"
+        offIcon="pi pi-circle-off"
+        styleClass="w-9rem status-5"
+        (click)="OrdersTogglesTable.onClickStatus()"
+        [(ngModel)]="orderStatus[5]"
+    />
+</div>
