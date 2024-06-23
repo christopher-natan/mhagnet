@@ -17,7 +17,7 @@ The app is still a work in progress and may encounter some issues and this is qu
     - https://github.com/christopher-natan/mhagnet/tree/dev/api
 
 3. **AI Reporter (AI Service)**
-    - This feature allows you to upload PDF documents and extract desired information or answer questions contained within the PDFs, I wrote it using NodeJS with Express.
+    - This feature allows you to upload PDF documents and extract desired information or answer questions contained within the PDFs, I wrote it using NodeJS with Express and using AI.
     - https://github.com/christopher-natan/mhagnet/tree/dev/ai-reporter
     - Using observables and  event-based
    
