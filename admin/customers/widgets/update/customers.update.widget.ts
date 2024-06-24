@@ -69,7 +69,8 @@ export class CustomersUpdateWidget implements OnInit {
         },
         onSubmit: async () => {
             this.isSubmitted = true;
-            if (!this._customersModel.isValidForm(this.customer)) {
+            const validate = this._customersModel.validate(this.customer, this._customersModel.requiredFields);
+            if (!validate.isValid) {
                 return await this._events.set(NotifierActions.onError, {message: this._strings.message['checkRequiredFields']});
             }
             const onSuccess = async (response: any) => {

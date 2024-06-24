@@ -25,12 +25,12 @@ export class ProductsModel extends Models {
 
     public findAll = async (onSuccess: Callback, onError?: Callback | undefined) => {
         const params = {path: 'product', onError: onError, onSuccess: onSuccess};
-        return await this.Requests.get(params);
+        return await this.Request.get(params);
     }
 
     public deleteProduct = async (product: Products, onSuccess: Callback, onError?: Callback) => {
         const params = {path: 'product/' + product.id, onError: onError, onSuccess: onSuccess, headers: {'Product-Id': product.id}};
-        return await this.Requests.delete(params);
+        return await this.Request.delete(params);
     }
 
     public saveIsAvailable = async (product: Products, onSuccess: Callback, onError?: Callback) => {
@@ -39,13 +39,13 @@ export class ProductsModel extends Models {
             noSpinner: true,
             data: {isAvailable: product.isAvailable}, onError: onError, onSuccess: onSuccess, headers: {'Product-Id': product.id}
         };
-        return await this.Requests.post(params);
+        return await this.Request.post(params);
     }
 
     public saveProduct = async (product: Products, onSuccess: Callback, onError?: Callback) => {
         product.categories = typeof product.categories !== 'object' ? this.toArrayOfObjects(product.categories) : product.categories;
         const params = {path: 'product', data: product, onError: onError, onSuccess: onSuccess, headers: {}}
-        return await this.Requests.post(params);
+        return await this.Request.post(params);
     }
 
     public saveCategories = async (categories: any, productId: string, onSuccess: Callback, onError?: Callback) => {
@@ -53,12 +53,12 @@ export class ProductsModel extends Models {
             path: 'product/categories',
             data: categories, onError: onError, onSuccess: onSuccess, headers: {'Product-Id': productId}
         };
-        return await this.Requests.post(params);
+        return await this.Request.post(params);
     }
 
     public deleteImage = async (productId: string, image: string, onSuccess: Callback, onError?: Callback) => {
         const params = {path: 'product/image/' + image, onError: onError, onSuccess: onSuccess, headers: {'Product-Id': productId}};
-        return await this.Requests.delete(params);
+        return await this.Request.delete(params);
     }
 
     public toArrayOfObjects = (input: string): { id: string }[] => {

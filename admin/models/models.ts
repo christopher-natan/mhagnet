@@ -4,7 +4,7 @@ import {SpinnerService} from "../services/spinner.service";
 import {Strings} from "../strings";
 import {Events} from "../events";
 import {NotifierActions} from "../services/notifier.service";
-import {firstValueFrom, Observable} from "rxjs";
+import {firstValueFrom} from "rxjs";
 import {Configs} from "../configs";
 
 export interface RequestParam {
@@ -28,15 +28,6 @@ export class Models {
                 protected _strings: Strings) {
     }
 
-    public onSuccess = async (response: any, onSuccess: (arg: any) => void, type: string) => {
-        if (type !== 'get') await this._events.set(NotifierActions.onSuccess, {message: response.message});
-        onSuccess(response);
-    }
-    public onError = async (response: any, onError: (arg: any) => void) => {
-        await this._events.set(NotifierActions.onError, {message: response.message});
-        onError !== undefined ? onError(response) : {};
-    }
-
     Error = {
         common: async (_: any) => {
             await this._spinnerService.hide();
@@ -44,25 +35,25 @@ export class Models {
         }
     }
 
-    Requests = {
+    Request = {
         _resource: async (method: string, params: RequestParam) => {
             const endpoint: string = this.apiBase + params.path;
-            const headers: any = this.Requests.getHeaders(params.headers);
+            const headers: any = this.Request.getHeaders(params.headers);
             const noSpinner: boolean = params.noSpinner !== undefined ? params.noSpinner : false;
             const actions = {
-                post:  this._http.post<any>(endpoint, params.data, {headers}),
-                get:  this._http.get<any>(endpoint, params.headers),
-                delete:  this._http.delete<any>(endpoint, headers)
+                post: this._http.post<any>(endpoint, params.data, {headers}),
+                get: this._http.get<any>(endpoint, params.headers),
+                delete: this._http.delete<any>(endpoint, headers)
             }
             !noSpinner ? await this._spinnerService.show() : {};
             return await firstValueFrom(actions[method]).then(async (response: any) => {
                 !noSpinner ? await this._spinnerService.hide() : {};
-                response.success ? await this.Requests._onSuccess(response, params, method) : await this.Requests._onError(response, params);
+                response.success ? await this.Request._onSuccess(response, params, method) : await this.Request._onError(response, params);
             }).catch(async (error: any) => this.Error.common(error));
         },
-        get: async (params: RequestParam) => await this.Requests._resource('get', params),
-        post: async (params: RequestParam) => await this.Requests._resource('post', params),
-        delete: async (params: RequestParam) => await this.Requests._resource('delete', params),
+        get: async (params: RequestParam) => await this.Request._resource('get', params),
+        post: async (params: RequestParam) => await this.Request._resource('post', params),
+        delete: async (params: RequestParam) => await this.Request._resource('delete', params),
         getHeaders: (headers?: any): HttpHeaders => {
             let options = {'Content-Type': 'application/json'};
             options = {...options, ...headers};
@@ -76,5 +67,25 @@ export class Models {
             await this._events.set(NotifierActions.onError, {message: response.message});
             params.onError !== undefined ? params.onError(response) : {};
         }
+    }
+
+    public validate = (data: any, schema: any, parentKey: string = '') => {
+        const errors: string[] = [];
+        const isEmptyOrZero = (value: any): boolean => {
+            return value === null || value === undefined || value === '' || value === 0;
+        }
+        for (const key in schema) {
+            const fullKey = parentKey ? `${parentKey}.${key}` : key;
+            const value = data[key];
+            const fieldSchema = schema[key];
+            if (fieldSchema.required && isEmptyOrZero(value)) {
+                errors.push(`${fullKey} is required and cannot be empty or zero.`);
+            }
+            if (fieldSchema.schema && value !== undefined && value !== null) {
+                const nestedResult = this.validate(value, fieldSchema.schema, fullKey);
+                errors.push(...nestedResult.errors);
+            }
+        }
+        return {isValid: errors.length === 0, errors};
     }
 }

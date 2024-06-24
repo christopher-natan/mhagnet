@@ -8,35 +8,25 @@ export interface Customers {
     contacts: any;
     points: any;
     wallet: any;
-    createAt: Date;
-    updatedAt: Date;
 }
 
 type Callback = (request: any) => void;
 
 @Injectable({providedIn: "root"})
 export class CustomersModel extends Models {
+    requiredFields = {
+        name: {required: true},
+        address: {required: true, schema: {delivery: {required: true}}},
+        contacts: {required: true, schema: {email: {required: true}}},
+    };
 
     public findAll = async (onSuccess: Callback, onError?: Callback) => {
         const params = {path: 'customers', onError: onError, onSuccess: onSuccess}
-        return await this.Requests.get(params);
+        return await this.Request.get(params);
     }
 
     public saveCustomer = async (customer: Customers, onSuccess: Callback, onError?: Callback) => {
         const params = {path: 'customers', onError: onError, onSuccess: onSuccess, data: customer}
-        return await this.Requests.post(params);
-    }
-
-    public isValidForm = (fields: any) => {
-        const errors = [];
-        const optional = ['points', 'wallet'];
-        for (const key in fields) {
-            const value = fields[key];
-            const included = optional.filter((item: any) => item === key).length;
-            if (value === null || value === undefined || value === '') {
-                (!included) ? errors.push(key) : {};
-            }
-        }
-        return !errors.length;
+        return await this.Request.post(params);
     }
 }

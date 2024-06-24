@@ -8,7 +8,6 @@ import {FormsModule} from "@angular/forms";
 import {NgClass, NgIf} from "@angular/common";
 import {PosActions} from "../../pages/pos.page";
 import {Events} from "../../../events";
-import {SpinnerService} from "../../../services/spinner.service";
 import {AutoCompleteModule} from "primeng/autocomplete";
 import {CustomersModel} from "../../../customers/models/customers.model";
 import {NotifierActions} from "../../../widgets/spinner/spinner.widget";
@@ -42,7 +41,6 @@ export class PosCustomerWidget implements OnInit {
     isSubmitted: boolean = false;
 
     constructor(protected _posModel: PosModel,
-                protected _spinnerService: SpinnerService,
                 protected _customersModel: CustomersModel,
                 protected _strings: Strings,
                 protected _events: Events) {
@@ -99,7 +97,9 @@ export class PosCustomerWidget implements OnInit {
         _onSubmitted: async () => {
             this._events.on(PosActions.onSubmitted, async (_: any) => {
                 this.isSubmitted = true;
-                if (!this._posModel.isValidForm(this.customer)) {
+                this.PosPage._replaceNameRule();
+                const validate = this._posModel.validate(this.customer, this._customersModel.requiredFields);
+                if (!validate.isValid) {
                     await this._events.set(PosCustomerActions.onValidatedError, {isError: true});
                     return await this._events.set(NotifierActions.onError, {message: this._strings.message['checkRequiredFields']});
                 }
@@ -107,7 +107,7 @@ export class PosCustomerWidget implements OnInit {
             });
         },
         _replaceNameRule: () => {
-            if(this.suggestions.length <= 0 && typeof this.customInfoHolder === 'string') {
+            if (this.suggestions !== undefined && this.suggestions.length <= 0 && typeof this.customInfoHolder === 'string') {
                 delete this.customer.id;
                 this.customer.name = this.customInfoHolder;
             }
@@ -121,9 +121,8 @@ export class PosCustomerWidget implements OnInit {
                 await this.PosCustomer.setDefault();
                 await this._events.set(PosActions.onSaved, {data: response.data});
             }
-            this.PosPage._replaceNameRule();
+
             this._posModel.posData.customer = this.customer;
-            console.log(this.customer);
             await this._posModel.saveOrder(this._posModel.posData, onSuccess).then(async (_: any) => {
                 this.isSubmitted = false;
             });

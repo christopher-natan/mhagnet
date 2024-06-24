@@ -16,8 +16,6 @@ export interface Orders {
     dateOrdered: Date;
     deliveryDate: Date;
     dateDelivered: Date;
-    createAt: Date;
-    updatedAt: Date;
 }
 
 type Callback = (request: any) => void;
@@ -46,7 +44,8 @@ export class PosModel extends Models {
         this.posData['customer'] = {
             name: '',
             address: {delivery: ''},
-            contacts: {email: '', phone: ''}
+            contacts: {email: '', phone: ''},
+            image: 'profile.jpg'
         };
     }
 
@@ -76,20 +75,7 @@ export class PosModel extends Models {
 
     public saveOrder = async (order: any, onSuccess: Callback, onError?: Callback | undefined) => {
         const params = {path: 'order', onError: onError, onSuccess: onSuccess, data: order}
-        return await this.Requests.post(params);
-    }
-
-    public isValidForm = (fields: any) => {
-        const errors = [];
-        const optional = ['phone', 'points', 'wallet'];
-        for (const key in fields) {
-            const value = fields[key];
-            const included = optional.filter((item: any) => item === key).length;
-            if (value === null || value === undefined || value === '') {
-                (!included) ? errors.push(key) : {};
-            }
-        }
-        return !errors.length;
+        return await this.Request.post(params);
     }
 
     public saveLocalStorage = async (name: string, value: any) => {

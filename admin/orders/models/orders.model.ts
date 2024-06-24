@@ -32,11 +32,11 @@ export class OrdersModel extends Models {
 
     public findAll = async (onSuccess: Callback, onError?: Callback | undefined) => {
         const params = {path: 'order', onError: onError, onSuccess: onSuccess}
-        return await this.Requests.get(params);
+        return await this.Request.get(params);
     }
 
     public saveOrder = async (order: Orders, onSuccess: Callback, onError?: Callback | undefined) => {
         const params = {path: 'order', onError: onError, onSuccess: onSuccess, data: order}
-        return await this.Requests.post(params);
+        return await this.Request.post(params);
     }
 }
