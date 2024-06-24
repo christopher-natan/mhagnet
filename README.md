@@ -1,6 +1,6 @@
 # Mhagnet App
 
-The Mhagnet app is crafted for personal use and to elevate my skills to a new level. It is comprising four main sections:
+The Mhagnet app is crafted for personal use and to check some development aspects that I have not previously encountered. It is comprising four main sections:
 The source code provided here are Sample Codes sourced from Mhagnet App at http://www.mhagnet.com/admin/products, intended solely for demonstration purposes.
 The app is still a work in progress and may encounter some issues and this is quite a big personal project and doing only on my available time.
 
@@ -23,7 +23,7 @@ The app is still a work in progress and may encounter some issues and this is qu
    
 3. **Driver App (Mobile Service)**
    - For Driver App I am using Dart-Flutter with GetX state management. I've developed Kitakits app and I will use it as the basis for the Mhagnet driver app,
-     with just a few tweaks to make it compatible. Check it on Playstore https://play.google.com/store/apps/details?id=com.cmnworks.kitakits
+     with just a few tweaks to make it compatible. Check it on PlayStore https://play.google.com/store/apps/details?id=com.cmnworks.kitakits
    - https://github.com/christopher-natan/mhagnet/tree/dev/drivers
    - Strictly Event-driven programming approach
 
