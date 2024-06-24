@@ -2,7 +2,7 @@
 
 The Mhagnet app is crafted for personal use and to elevate my skills to a new level. It is comprising four main sections:
 The source code provided here are Sample Codes sourced from Mhagnet App at http://www.mhagnet.com/admin/products, intended solely for demonstration purposes.
-The app is still a work in progress and may encounter some issues and this is quite a BIG PERSONAL PROJECT.
+The app is still a work in progress and may encounter some issues and this is quite a big personal project and doing only on my available time.
 
 
 ## Sections
