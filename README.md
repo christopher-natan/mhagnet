@@ -4,6 +4,8 @@ The Mhagnet app is crafted for personal use and to check some development aspect
 The source code provided here are Sample Codes sourced from my Mhagnet App at http://www.mhagnet.com/admin/products, intended solely for demonstration purposes.
 The app is still a work in progress and may encounter some issues and this is quite a big personal project and doing only on my available time.
 
+For Deployment: I am not using CI/CD here, mostly I am utilizing free resources except the google cloud platform, but for local development tool I am using Virtual Box with debian OS - simulating the google cloud compute.
+
 
 ## Sections
 
